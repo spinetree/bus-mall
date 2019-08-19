@@ -1,10 +1,28 @@
-// a list of images that we've got in a folder
-// a list of the images we just saw
-// a variable for the number of times we've voted
+/* eslint-disable no-unused-vars */
+
+var images = ['assets/bag.jpg', 'assets/banana.jpg', 'assets/bathroom.jpg', 'assets/boots.jpg', 'assets/breakfast.jpg', 'assets/bubblegum.jpg', 'assets/chair.jpg', 'assets/cthulhu.jpg', 'assets/dog-duck.jpg', 'assets/dragon.jpg', 'assets/pen.jpg', 'assets/pet-sweep.jpg', 'assets/scissors.jpg', 'assets/shark.jpg', 'assets/sweep.png', 'assets/tauntaun.jpg', 'assets/unicorn.jpg', 'assets/usb.gif', 'assets/water-can.jpg', 'assets/wine-glass.jpg'];
+var lastSeen = [];
+var votes = 0;
+var productList = [];
 
 
-// load images from the list into constructor
+function loadProducts() {
+  for (var i = 0; i < images.length; i++) {
+    var productTemp = new Product(images[i]);
+  }
+  console.log('created Products: ' + productList.length);
+}
 
+
+function Product(url) {
+  this.name = url, //replace this later with a regexp that cleans out everything not between / and .
+  this.url = url,
+  this.appearances = 0,
+  this.votes = 0,
+  this.hitRate = 0,
+  this.id = productList.length;
+  productList.push(this);
+}
 
 // a constructor function
 // -----------------------
@@ -14,6 +32,23 @@
 // with a number for total appearances
 // with a number for times it got choesn
 // and a hit %
+
+Product.prototype = {
+
+  madeAppearance: function() {
+    this.appearances++;
+    lastSeen.push(this.id);
+    // console.log('made appearance');
+  },
+  gotVote: function() {
+    this.votes++;
+    // console.log('gotvote');
+  },
+  calcHitRate: function() {
+    this.hitRate = this.votes / this.appearances;
+    // console.log('my hit rate:' + this.hitRate);
+  }
+};
 
 
 // prototype
@@ -68,5 +103,3 @@
 // use .sort on that array
 
 // fill #results-list with the sorted array
-
-
