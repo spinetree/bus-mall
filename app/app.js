@@ -38,8 +38,10 @@
 // else
 // add to the list of candidate images
 
+// if the list of candidate images = 3
 // loop through the candidate images
-// create a figure for each
+// ++ its total appearances
+// create a figure and radio button for each
 // append those to the dom
 
 
@@ -47,7 +49,6 @@
 // -----------------------
 // when I click on a figure
 // ++ that ones's total votes
-// ++ everyone's total appearances
 // increase my vote number ++
 // if it's 25
 // render the results list
