@@ -60,6 +60,12 @@ Product.prototype = {
 // recalc my hit %
 // and add itself(its index? yes) to the list of images we just saw ()
 
+var getCandidate = function() {
+  var candidateIndex = Math.floor((Math.random() * productList.length));
+  console.log('getCandidate' + candidateIndex);
+  return productList[candidateIndex];
+};
+
 
 // render the test mechanism
 // -----------------------
