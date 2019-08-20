@@ -162,3 +162,14 @@ function renderResults() {
     resultsContainer.appendChild(singleResult);
   }
 }
+
+var ctxt = document.getElementById('chart').getContext('2d');
+var chart = new Chart(ctxt, {
+  type:'line',
+  data: {
+
+    labels: ['one','two','three','four','five','six','seven']
+  },// end data
+  //options
+  options: {}
+});
