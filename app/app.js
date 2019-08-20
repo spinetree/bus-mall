@@ -85,6 +85,8 @@ var renderTest = function() {
 var countVote = function(winner) {
   var winner = winner.target.getAttribute('data-id');
   console.log(winner);
+  productList[winner].gotVote();
+  console.log(productList[winner].votes + ' total votes');
 };
 
 function addEventListeners() {
