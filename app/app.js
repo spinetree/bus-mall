@@ -45,31 +45,24 @@ var getCandidateIndex = function () {
   return candidateIndex;
 };
 
-
-var getCandidates = function () {
+var getCandidates = function() {
   while (testCandidates.length < 3) {
     var candidate = getCandidateIndex();
-    if (lastSeen.includes(candidate)) {
-    //   console.log('already in lastSeen!');
-      getCandidates();
-    }
-    if (testCandidates.includes(candidate)) {
-    //   console.log('already in testCandidates!');
-      getCandidates();
+    if (!testCandidates.includes(candidate) && !lastSeen.includes(candidate)) {
+      testCandidates.push(candidate);
+      // console.log('testCandidates: ' + testCandidates);
     }
     else {
-      testCandidates.push(candidate);
-      if (testCandidates.length === 3) {
-        console.log('candidates length: ' + testCandidates.length);
-      }
+      // console.log('getting new candidate');
+      getCandidates();
     }
+  }
+  if (testCandidates.length === 3) {
+    return testCandidates;
   }
 };
 
-// add in the bit where everyone who appeared on teh page gets madeAppearance() called
-
 var renderTest = function() {
-  // testContainer.textContent = '';
   for (var i = 0; i < testCandidates.length; i++) {
     var choice = document.createElement('figure');
     var candidateId = testCandidates[i];
@@ -80,53 +73,32 @@ var renderTest = function() {
     testContainer.appendChild(choice);
     productList[candidateId].madeAppearance();
     lastSeen.push(candidateId);
-    console.log('candidate '+ candidateId + ' appearances: ' + productList[candidateId].appearances);
+    // console.log('candidate '+ candidateId + ' appearances: ' + productList[candidateId].appearances);
   }
   testButtons = testContainer.getElementsByTagName('figure');
 };
 
 var countVote = function(winner) {
   var winnerId = winner.target.getAttribute('data-id');
-  console.log(winnerId);
   productList[winnerId].gotVote();
-  console.log(productList[winnerId].votes + ' total votes');
   testContainer.textContent = '';
   lastSeen = testCandidates;
   testCandidates = [];
   getCandidates();
   renderTest();
+  // when vote happens, votecount ++
+  // when it's 25 renderResults()
 };
 
 function addEventListeners() {
   for (var i = 0; i < testButtons.length;i++) {
     document.addEventListener('click', countVote);
-    console.log('attached');
   }
 }
 
-// event listener - user clicks a thing
-// -----------------------
-// when I click on a figure
-// ++ that ones's total votes
-// increase my vote number ++
-// if it's 25
-// render the results list
-// else
-// wipe out the list of last round
-// add everyone to the list of last round
-// re-render the test mechanism
 
 
-// render a results list
-// -----------------------
-// crawl each object and get its url, name, total clicks and total votes
-// get #results-list
 
-// for each object create a li containing name etc. and a decimal of its hit %
-// push them shits into an array
-// use .sort on that array
-
-// fill #results-list with the sorted array
 
 loadProducts();
 getCandidates();
