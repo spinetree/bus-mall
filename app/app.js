@@ -45,14 +45,13 @@ var getCandidateIndex = function () {
   return candidateIndex;
 };
 
-var getCandidates = function() {
+var getCandidates = function () {
   while (testCandidates.length < 3) {
     var candidate = getCandidateIndex();
     if (!testCandidates.includes(candidate) && !lastSeen.includes(candidate)) {
       testCandidates.push(candidate);
       // console.log('testCandidates: ' + testCandidates);
-    }
-    else {
+    } else {
       // console.log('getting new candidate');
       getCandidates();
     }
@@ -62,7 +61,7 @@ var getCandidates = function() {
   }
 };
 
-var renderTest = function() {
+var renderTest = function () {
   for (var i = 0; i < testCandidates.length; i++) {
     var choice = document.createElement('figure');
     var candidateId = testCandidates[i];
@@ -78,7 +77,7 @@ var renderTest = function() {
   testButtons = testContainer.getElementsByTagName('figure');
 };
 
-var countVote = function(winner) {
+var countVote = function (winner) {
   var winnerId = winner.target.getAttribute('data-id');
   productList[winnerId].gotVote();
   testContainer.textContent = '';
@@ -86,21 +85,40 @@ var countVote = function(winner) {
   testCandidates = [];
   getCandidates();
   renderTest();
-  // when vote happens, votecount ++
-  // when it's 25 renderResults()
+  votes++;
+  if (votes === 25) {
+    console.log('rendering results');
+    disableVoting();
+    renderResults();
+  } else {
+    updateVoteTally();
+  }
 };
 
 function addEventListeners() {
-  for (var i = 0; i < testButtons.length;i++) {
+  for (var i = 0; i < testButtons.length; i++) {
     document.addEventListener('click', countVote);
   }
 }
-
-
-
-
 
 loadProducts();
 getCandidates();
 renderTest();
 addEventListeners();
+
+function updateVoteTally() {
+  var voteTally = document.getElementById('vote-tally');
+  voteTally.textContent = votes;
+
+}
+
+function disableVoting() {
+  console.log('disabling voting');
+  document.removeEventListener('click', countVote);
+}
+
+function renderResults() {
+  console.log('attempting to render results');
+  var resultsList = document.getElementById('results-list');
+  resultsList.textContent = ''; 
+}
