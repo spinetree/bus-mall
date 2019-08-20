@@ -49,18 +49,18 @@ var getCandidateIndex = function () {
 var getCandidates = function () {
   while (testCandidates.length < 3) {
     var candidate = getCandidateIndex();
-    if (testCandidates.includes(candidate)) {
-      console.log('already in testCandidates!');
+    if (lastSeen.includes(candidate)) {
+    //   console.log('already in lastSeen!');
       getCandidates();
     }
-    if (lastSeen.includes(candidate)) {
-      console.log('already in testCandidates!');
+    if (testCandidates.includes(candidate)) {
+    //   console.log('already in testCandidates!');
       getCandidates();
     }
     else {
       testCandidates.push(candidate);
       if (testCandidates.length === 3) {
-        console.log('candidates found: ' + testCandidates.join(', '));
+        console.log('candidates length: ' + testCandidates.length);
       }
     }
   }
@@ -75,18 +75,26 @@ var renderTest = function() {
     var candidateId = testCandidates[i];
     choice.setAttribute('data-id', candidateId);
     var caption = document.createElement('figcaption');
-    caption.textContent = productList[i].name;
+    caption.textContent = productList[candidateId].name;
     choice.appendChild(caption);
     testContainer.appendChild(choice);
+    productList[candidateId].madeAppearance();
+    lastSeen.push(candidateId);
+    console.log('candidate '+ candidateId + ' appearances: ' + productList[candidateId].appearances);
   }
   testButtons = testContainer.getElementsByTagName('figure');
 };
 
 var countVote = function(winner) {
-  var winner = winner.target.getAttribute('data-id');
-  console.log(winner);
-  productList[winner].gotVote();
-  console.log(productList[winner].votes + ' total votes');
+  var winnerId = winner.target.getAttribute('data-id');
+  console.log(winnerId);
+  productList[winnerId].gotVote();
+  console.log(productList[winnerId].votes + ' total votes');
+  testContainer.textContent = '';
+  lastSeen = testCandidates;
+  testCandidates = [];
+  getCandidates();
+  renderTest();
 };
 
 function addEventListeners() {

@@ -1,2 +1,10 @@
-figure {width:200px; height:200px; border:1px solid #333;}
-figure:hover {cursor:pointer;}
+figure {
+    width: 200px;
+    height: 200px;
+    border: 1px solid #333;
+    display: inline-block;
+}
+
+figure:hover {
+    cursor: pointer;
+}
