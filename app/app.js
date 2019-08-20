@@ -1,6 +1,28 @@
 /* eslint-disable no-unused-vars */
 
-var images = ['assets/bag.jpg', 'assets/banana.jpg', 'assets/bathroom.jpg', 'assets/boots.jpg', 'assets/breakfast.jpg', 'assets/bubblegum.jpg', 'assets/chair.jpg', 'assets/cthulhu.jpg', 'assets/dog-duck.jpg', 'assets/dragon.jpg', 'assets/pen.jpg', 'assets/pet-sweep.jpg', 'assets/scissors.jpg', 'assets/shark.jpg', 'assets/sweep.png', 'assets/tauntaun.jpg', 'assets/unicorn.jpg', 'assets/usb.gif', 'assets/water-can.jpg', 'assets/wine-glass.jpg'];
+function loadProducts() {
+  new Product('bag', 'assets/bag.jpg');
+  new Product('banana', 'assets/banana.jpg');
+  new Product('bathroom', 'assets/bathroom.jpg');
+  new Product('boots', 'assets/boots.jpg');
+  new Product('breakfast', 'assets/breakfast.jpg');
+  new Product('bubblegum', 'assets/bubblegum.jpg');
+  new Product('chair', 'assets/chair.jpg');
+  new Product('cthulhu', 'assets/cthulhu.jpg');
+  new Product('dogduck', 'assets/dog-duck.jpg');
+  new Product('dragon', 'assets/dragon.jpg');
+  new Product('pen', 'assets/pen.jpg');
+  new Product('petsweep', 'assets/pet-sweep.jpg');
+  new Product('scissors', 'assets/scissors.jpg');
+  new Product('shark', 'assets/shark.jpg');
+  new Product('sweep', 'assets/sweep.png');
+  new Product('tauntaun', 'assets/tauntaun.jpg');
+  new Product('unicorn', 'assets/unicorn.jpg');
+  new Product('usb', 'assets/usb.gif');
+  new Product('watercan', 'assets/water-can.jpg');
+  new Product('wineglass', 'assets/wine-glass.jpg');
+}
+
 var lastSeen = [];
 var votes = 0;
 var productList = [];
@@ -9,14 +31,8 @@ var testContainer = document.getElementById('test-container');
 var testButtons;
 var results = {};
 
-function loadProducts() {
-  for (var i = 0; i < images.length; i++) {
-    var productTemp = new Product(images[i]);
-  }
-}
-
-function Product(url) {
-  this.name = url, //replace this later with a regexp that cleans out everything not between / and or just add titles which is more scalable.
+function Product(title, url) {
+  this.title = title,
   this.url = url,
   this.appearances = 0,
   this.votes = 0,
@@ -65,8 +81,9 @@ var renderTest = function () {
     var choice = document.createElement('figure');
     var candidateId = testCandidates[i];
     choice.setAttribute('data-id', candidateId);
+    choice.setAttribute('style',`background-image:url('${productList[candidateId].url}')`);
     var caption = document.createElement('figcaption');
-    caption.textContent = productList[candidateId].name;
+    caption.textContent = productList[candidateId].title;
     choice.appendChild(caption);
     testContainer.appendChild(choice);
     productList[candidateId].madeAppearance();
@@ -114,7 +131,6 @@ addEventListeners();
 function updateVoteTally() {
   var voteTally = document.getElementById('vote-tally');
   voteTally.textContent = votes;
-  // update this with actual results
 }
 
 
@@ -138,12 +154,11 @@ function renderResults() {
   console.log('attempting to render results');
   var resultsContainer = document.getElementById('results-list');
   resultsContainer.textContent = '';
-  for (var i=0; i< productList.length; i++) {
-    var productName = productList[i].name;
+  for (var i = 0; i < productList.length; i++) {
+    var productTitle = productList[i].title;
     var productHitRate = productList[i].hitRate;
     var singleResult = document.createElement('li');
-    singleResult.textContent = `${productName}: ${productHitRate}%`;
+    singleResult.textContent = `${productTitle}: ${productHitRate}%`;
     resultsContainer.appendChild(singleResult);
   }
 }
-

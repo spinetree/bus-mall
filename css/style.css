@@ -1,10 +1,29 @@
 figure {
     width: 200px;
     height: 200px;
-    border: 1px solid #333;
+    /* border: 2px solid #efefef; */
     display: inline-block;
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position: center center;
+    position:relative;
 }
 
 figure:hover {
     cursor: pointer;
+}
+
+figcaption {
+    position:absolute;
+    bottom:0;
+    height:28px;
+    line-height:28px;
+    font-size:16px;
+    font-style:italic;
+    text-align:center;
+    background: rgba(0,0,0,0.7);
+    color:#dedede;
+    letter-spacing: .25px;
+    width:100%;
+    
 }
