@@ -7,6 +7,7 @@ var productList = [];
 var testCandidates = [];
 var testContainer = document.getElementById('test-container');
 var testButtons;
+var results = {};
 
 function loadProducts() {
   for (var i = 0; i < images.length; i++) {
@@ -15,7 +16,7 @@ function loadProducts() {
 }
 
 function Product(url) {
-  this.name = url, //replace this later with a regexp that cleans out everything not between / and .
+  this.name = url, //replace this later with a regexp that cleans out everything not between / and or just add titles which is more scalable.
   this.url = url,
   this.appearances = 0,
   this.votes = 0,
@@ -23,7 +24,6 @@ function Product(url) {
   this.id = productList.length;
   productList.push(this);
 }
-
 
 Product.prototype = {
 
@@ -36,6 +36,7 @@ Product.prototype = {
   },
   calcHitRate: function () {
     this.hitRate = this.votes / this.appearances;
+    this.hitRate = Math.floor(this.hitRate * 100);
   }
 };
 
@@ -50,9 +51,7 @@ var getCandidates = function () {
     var candidate = getCandidateIndex();
     if (!testCandidates.includes(candidate) && !lastSeen.includes(candidate)) {
       testCandidates.push(candidate);
-      // console.log('testCandidates: ' + testCandidates);
     } else {
-      // console.log('getting new candidate');
       getCandidates();
     }
   }
@@ -72,7 +71,6 @@ var renderTest = function () {
     testContainer.appendChild(choice);
     productList[candidateId].madeAppearance();
     lastSeen.push(candidateId);
-    // console.log('candidate '+ candidateId + ' appearances: ' + productList[candidateId].appearances);
   }
   testButtons = testContainer.getElementsByTagName('figure');
 };
@@ -89,6 +87,7 @@ var countVote = function (winner) {
   if (votes === 25) {
     console.log('rendering results');
     disableVoting();
+    getHitRates();
     renderResults();
   } else {
     updateVoteTally();
@@ -97,28 +96,54 @@ var countVote = function (winner) {
 
 function addEventListeners() {
   for (var i = 0; i < testButtons.length; i++) {
-    document.addEventListener('click', countVote);
+    testContainer.addEventListener('click', countVote);
+    // TODO: needs conditional so only does a thing if it's coming from a figure.
   }
 }
+
+// pre-voting things:
 
 loadProducts();
 getCandidates();
 renderTest();
 addEventListeners();
 
+
+// post-voting things:
+
 function updateVoteTally() {
   var voteTally = document.getElementById('vote-tally');
   voteTally.textContent = votes;
-
+  // update this with actual results
 }
+
 
 function disableVoting() {
   console.log('disabling voting');
-  document.removeEventListener('click', countVote);
+  testContainer.removeEventListener('click', countVote);
 }
+
+
+function getHitRates() {
+  for (var i = 0; i < productList.length; i++) {
+    productList[i].calcHitRate();
+    var candidateId = productList[i].id;
+    var candidateHitRate = productList[i].hitRate;
+    results[candidateId] = candidateHitRate;
+  }
+}
+
 
 function renderResults() {
   console.log('attempting to render results');
-  var resultsList = document.getElementById('results-list');
-  resultsList.textContent = ''; 
+  var resultsContainer = document.getElementById('results-list');
+  resultsContainer.textContent = '';
+  for (var i=0; i< productList.length; i++) {
+    var productName = productList[i].name;
+    var productHitRate = productList[i].hitRate;
+    var singleResult = document.createElement('li');
+    singleResult.textContent = `${productName}: ${productHitRate}%`;
+    resultsContainer.appendChild(singleResult);
+  }
 }
+
