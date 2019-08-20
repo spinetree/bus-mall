@@ -1,18 +1,17 @@
 /* eslint-disable no-unused-vars */
 
 var images = ['assets/bag.jpg', 'assets/banana.jpg', 'assets/bathroom.jpg', 'assets/boots.jpg', 'assets/breakfast.jpg', 'assets/bubblegum.jpg', 'assets/chair.jpg', 'assets/cthulhu.jpg', 'assets/dog-duck.jpg', 'assets/dragon.jpg', 'assets/pen.jpg', 'assets/pet-sweep.jpg', 'assets/scissors.jpg', 'assets/shark.jpg', 'assets/sweep.png', 'assets/tauntaun.jpg', 'assets/unicorn.jpg', 'assets/usb.gif', 'assets/water-can.jpg', 'assets/wine-glass.jpg'];
-var lastSeen = [];
+var lastSeen = []; 
 var votes = 0;
 var productList = [];
-
+var testCandidates = [];
 
 function loadProducts() {
   for (var i = 0; i < images.length; i++) {
     var productTemp = new Product(images[i]);
   }
-  console.log('created Products: ' + productList.length);
+  //   console.log('created Products: ' + productList.length);
 }
-
 
 function Product(url) {
   this.name = url, //replace this later with a regexp that cleans out everything not between / and .
@@ -35,16 +34,16 @@ function Product(url) {
 
 Product.prototype = {
 
-  madeAppearance: function() {
+  madeAppearance: function () {
     this.appearances++;
     lastSeen.push(this.id);
     // console.log('made appearance');
   },
-  gotVote: function() {
+  gotVote: function () {
     this.votes++;
     // console.log('gotvote');
   },
-  calcHitRate: function() {
+  calcHitRate: function () {
     this.hitRate = this.votes / this.appearances;
     // console.log('my hit rate:' + this.hitRate);
   }
@@ -60,12 +59,31 @@ Product.prototype = {
 // recalc my hit %
 // and add itself(its index? yes) to the list of images we just saw ()
 
-var getCandidate = function() {
+var getCandidateIndex = function () {
   var candidateIndex = Math.floor((Math.random() * productList.length));
-  console.log('getCandidate' + candidateIndex);
-  return productList[candidateIndex];
+  console.log('getCandidate: ' + candidateIndex);
+  return candidateIndex;
 };
 
+var getCandidates = function () {
+  while (testCandidates.length < 3) {
+    var candidate = getCandidateIndex();
+    if (testCandidates.includes(candidate)) {
+      console.log('already in testCandidates!');
+      getCandidates();
+    }
+    if (lastSeen.includes(candidate)) {
+      console.log('already in testCandidates!');
+      getCandidates();
+    }
+    else {
+      testCandidates.push(candidate);
+      if (testCandidates.length === 3) {
+        console.log('candidates found: ' + testCandidates.join(', '));
+      }
+    }
+  }
+};
 
 // render the test mechanism
 // -----------------------
