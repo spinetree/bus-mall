@@ -1,16 +1,17 @@
 /* eslint-disable no-unused-vars */
 
 var images = ['assets/bag.jpg', 'assets/banana.jpg', 'assets/bathroom.jpg', 'assets/boots.jpg', 'assets/breakfast.jpg', 'assets/bubblegum.jpg', 'assets/chair.jpg', 'assets/cthulhu.jpg', 'assets/dog-duck.jpg', 'assets/dragon.jpg', 'assets/pen.jpg', 'assets/pet-sweep.jpg', 'assets/scissors.jpg', 'assets/shark.jpg', 'assets/sweep.png', 'assets/tauntaun.jpg', 'assets/unicorn.jpg', 'assets/usb.gif', 'assets/water-can.jpg', 'assets/wine-glass.jpg'];
-var lastSeen = []; 
+var lastSeen = [];
 var votes = 0;
 var productList = [];
 var testCandidates = [];
+var testContainer = document.getElementById('test-container');
+var testButtons;
 
 function loadProducts() {
   for (var i = 0; i < images.length; i++) {
     var productTemp = new Product(images[i]);
   }
-  //   console.log('created Products: ' + productList.length);
 }
 
 function Product(url) {
@@ -23,47 +24,27 @@ function Product(url) {
   productList.push(this);
 }
 
-// a constructor function
-// -----------------------
-// that turns each image from the list into an object with
-// title
-// ID (we need a unique id to use when checking an image against the already-done list)
-// with a number for total appearances
-// with a number for times it got choesn
-// and a hit %
 
 Product.prototype = {
 
   madeAppearance: function () {
     this.appearances++;
     lastSeen.push(this.id);
-    // console.log('made appearance');
   },
   gotVote: function () {
     this.votes++;
-    // console.log('gotvote');
   },
   calcHitRate: function () {
     this.hitRate = this.votes / this.appearances;
-    // console.log('my hit rate:' + this.hitRate);
   }
 };
 
 
-// prototype
-// -----------------------
-// let each product alter its stats when a vote happens
-// product.won() = ++ my hit total
-// recalc my hit %
-// product.lost() = ++ my appearances total
-// recalc my hit %
-// and add itself(its index? yes) to the list of images we just saw ()
-
 var getCandidateIndex = function () {
   var candidateIndex = Math.floor((Math.random() * productList.length));
-  console.log('getCandidate: ' + candidateIndex);
   return candidateIndex;
 };
+
 
 var getCandidates = function () {
   while (testCandidates.length < 3) {
@@ -85,24 +66,33 @@ var getCandidates = function () {
   }
 };
 
-// render the test mechanism
-// -----------------------
+// add in the bit where everyone who appeared on teh page gets madeAppearance() called
 
-// while candidate images < 3
-// choose a random image
-// check that random image against the list of just-shown ones
-// if it's on the list, run this function again
-// check if it's on the candidate list already
-// if it's on the list, run this function again
-// else
-// add to the list of candidate images
+var renderTest = function() {
+  // testContainer.textContent = '';
+  for (var i = 0; i < testCandidates.length; i++) {
+    var choice = document.createElement('figure');
+    var candidateId = testCandidates[i];
+    choice.setAttribute('data-id', candidateId);
+    var caption = document.createElement('figcaption');
+    caption.textContent = productList[i].name;
+    choice.appendChild(caption);
+    testContainer.appendChild(choice);
+  }
+  testButtons = testContainer.getElementsByTagName('figure');
+};
 
-// if the list of candidate images = 3
-// loop through the candidate images
-// ++ its total appearances
-// create a figure and radio button for each
-// append those to the dom
+var countVote = function(winner) {
+  var winner = winner.target.getAttribute('data-id');
+  console.log(winner);
+};
 
+function addEventListeners() {
+  for (var i = 0; i < testButtons.length;i++) {
+    document.addEventListener('click', countVote);
+    console.log('attached');
+  }
+}
 
 // event listener - user clicks a thing
 // -----------------------
@@ -127,3 +117,8 @@ var getCandidates = function () {
 // use .sort on that array
 
 // fill #results-list with the sorted array
+
+loadProducts();
+getCandidates();
+renderTest();
+addEventListeners();
