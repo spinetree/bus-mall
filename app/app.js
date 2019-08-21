@@ -1,3 +1,4 @@
+/* eslint-disable no-extra-semi */
 /* eslint-disable no-unused-vars */
 
 function loadProducts() {
@@ -105,7 +106,8 @@ var countVote = function (winner) {
     console.log('rendering results');
     disableVoting();
     getHitRates();
-    renderResults();
+    // renderResults();
+    renderChart();
   } else {
     updateVoteTally();
   }
@@ -149,38 +151,58 @@ function getHitRates() {
   }
 }
 
+// shouldn't need this now that we're rendering this stuff directly to an array for the charts
+// function renderResults() {
+//   var resultsContainer = document.getElementById('results-list');
+//   resultsContainer.textContent = '';
+//   for (var i = 0; i < productList.length; i++) {
+//     var productTitle = productList[i].title;
+//     var productHitRate = productList[i].hitRate;
+//     var singleResult = document.createElement('li');
+//     singleResult.textContent = `${productTitle}: ${productHitRate}%`;
+//     resultsContainer.appendChild(singleResult);
+//   }
+// }
 
-function renderResults() {
-  // console.log('attempting to render results');
-  var resultsContainer = document.getElementById('results-list');
-  resultsContainer.textContent = '';
-  for (var i = 0; i < productList.length; i++) {
-    var productTitle = productList[i].title;
-    var productHitRate = productList[i].hitRate;
-    var singleResult = document.createElement('li');
-    singleResult.textContent = `${productTitle}: ${productHitRate}%`;
-    resultsContainer.appendChild(singleResult);
-  }
+// Charts!
+var chartContext = document.getElementById('chart').getContext('2d');
+
+// render chart data
+
+function renderChartLabels() {
+  var chartLabels = [];
+  for(var i=0; i < productList.length; i++) {
+    chartLabels.push(productList[i].title);
+  };
+  return chartLabels;
+};
+
+function renderChartData() {
+  var chartData = [];
+  for(var i=0; i < productList.length; i++) {
+    chartData.push(productList[i].hitRate);
+  };
+  return chartData;
+};
+
+function renderChart() {
+
+  // eslint-disable-next-line no-undef
+  chartContext = new Chart(chartContext, {
+    type: 'bar',
+
+    data: {
+      labels: renderChartLabels(),
+      datasets: [{
+        label: 'Product vote percentages',
+        backgroundColor: 'rgb(40,40,40)',
+        data: renderChartData()
+      }]
+    }
+  });
+
 }
 
 
-// Charts!
 
-var ctxt = document.getElementById('chart').getContext('2d');
 
-// eslint-disable-next-line no-undef
-var chart = new Chart(ctxt, {
-  type:'bar',
-
-  // The data for our dataset (placeholder from ChartsJS example)
-  data: {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [{
-      label: 'Test results',
-      backgroundColor: 'rgb(40, 40, 40)',
-      data: [12, 10, 5, 2, 20, 30, 45]
-    }]
-  },
-
-  options: {}
-});
