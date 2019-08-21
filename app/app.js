@@ -106,7 +106,8 @@ var countVote = function (winner) {
     console.log('rendering results');
     disableVoting();
     getHitRates();
-    renderResults();
+    // renderResults();
+    renderChart();
   } else {
     updateVoteTally();
   }
@@ -150,20 +151,23 @@ function getHitRates() {
   }
 }
 
+// shouldn't need this now that we're rendering this stuff directly to an array for the charts
+// function renderResults() {
+//   var resultsContainer = document.getElementById('results-list');
+//   resultsContainer.textContent = '';
+//   for (var i = 0; i < productList.length; i++) {
+//     var productTitle = productList[i].title;
+//     var productHitRate = productList[i].hitRate;
+//     var singleResult = document.createElement('li');
+//     singleResult.textContent = `${productTitle}: ${productHitRate}%`;
+//     resultsContainer.appendChild(singleResult);
+//   }
+// }
 
-function renderResults() {
-  var resultsContainer = document.getElementById('results-list');
-  resultsContainer.textContent = '';
-  for (var i = 0; i < productList.length; i++) {
-    var productTitle = productList[i].title;
-    var productHitRate = productList[i].hitRate;
-    var singleResult = document.createElement('li');
-    singleResult.textContent = `${productTitle}: ${productHitRate}%`;
-    resultsContainer.appendChild(singleResult);
-  }
-}
+// Charts!
+var chartContext = document.getElementById('chart').getContext('2d');
 
-// lets skip adding empty variables and just make one function that returns that array instead.
+// render chart data
 
 function renderChartLabels() {
   var chartLabels = [];
@@ -173,7 +177,6 @@ function renderChartLabels() {
   return chartLabels;
 };
 
-
 function renderChartData() {
   var chartData = [];
   for(var i=0; i < productList.length; i++) {
@@ -182,25 +185,23 @@ function renderChartData() {
   return chartData;
 };
 
-// Charts!
-chartContext = document.getElementById('chart').getContext('2d');
+function renderChart() {
 
-// eslint-disable-next-line no-undef
-var chartContext = new Chart(chartContext, {
-  type: 'bar',
+  // eslint-disable-next-line no-undef
+  chartContext = new Chart(chartContext, {
+    type: 'bar',
 
-  data: {
-    labels: renderChartLabels(),
-    datasets: [{ // data needs to all appear in a dataset
-      label: 'Product vote percentages',
-      backgroundColor: 'rgb(40,40,40)', // this can be an array or even better function that loops through one.
-      data: renderChartData()
-    }]
-  },
+    data: {
+      labels: renderChartLabels(),
+      datasets: [{
+        label: 'Product vote percentages',
+        backgroundColor: 'rgb(40,40,40)',
+        data: renderChartData()
+      }]
+    }
+  });
 
-  options: {} // if end up doing much with this let's make it a separate object that gets passed in so this stays more readable.
-
-});
+}
 
 
 
