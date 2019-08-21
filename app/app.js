@@ -179,8 +179,15 @@ var chart = new Chart(ctxt, {
       label: 'Test results',
       backgroundColor: 'rgb(40, 40, 40)',
       data: [12, 10, 5, 2, 20, 30, 45]
-    }]
+    },
+    {
+      label: 'Test results2',
+      backgroundColor: 'rgb(100, 100, 100)',
+      data: [11, 8, 3, 12, 10, 60, 15]
+    }],
   },
-
   options: {}
 });
+
+
+
