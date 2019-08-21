@@ -47,6 +47,7 @@ p {
     font-size: 16px;
     line-height: 1.5;
     margin-top: 16px;
+    text-align:left;
 }
 
 /* Layout  */
@@ -79,9 +80,11 @@ nav li {
 }
 
 main {
-    /* float: left;
-    width: 80%; */
+    max-width: 960px;
+    width:50%;
     min-width: 640px;
+    margin: 0 auto;
+    text-align:center;
 }
 
 main section {
@@ -93,9 +96,12 @@ main section {
 aside {
     width: 20%;
     min-width: 100px;
+    position:fixed;
+    left:0;
+    top:200px;
     /* float: left; */
-    clear: both;
-    min-height: 80vh;
+    /* clear: both; */
+    min-height: 20vh;
     background: #dedede;
 }
 
@@ -120,6 +126,7 @@ footer {
 /* test mechanism */
 #test-container {
     min-width: 800px;
+    background:#dedede;
 }
 
 figure {
