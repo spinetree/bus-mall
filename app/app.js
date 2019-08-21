@@ -1,3 +1,4 @@
+/* eslint-disable no-extra-semi */
 /* eslint-disable no-unused-vars */
 
 function loadProducts() {
@@ -151,7 +152,6 @@ function getHitRates() {
 
 
 function renderResults() {
-  // console.log('attempting to render results');
   var resultsContainer = document.getElementById('results-list');
   resultsContainer.textContent = '';
   for (var i = 0; i < productList.length; i++) {
@@ -163,22 +163,38 @@ function renderResults() {
   }
 }
 
+// lets skip adding empty variables and just make one function that returns that array instead.
+
+function renderChartLabels() {
+  var chartLabels = [];
+  for(var i=0; i < productList.length; i++) {
+    chartLabels.push(productList[i].title);
+  };
+  return chartLabels;
+};
+
+
+function renderChartData() {
+  var chartData = [];
+  for(var i=0; i < productList.length; i++) {
+    chartData.push(productList[i].hitRate);
+  };
+  return chartData;
+};
 
 // Charts!
-
 chartContext = document.getElementById('chart').getContext('2d');
 
 // eslint-disable-next-line no-undef
 var chartContext = new Chart(chartContext, {
   type: 'bar',
 
-  //data!
-  data: { // this is probably the object I need to generate from my results
-    labels: ['label1', 'label2','label3', 'label4', 'label5', 'label6', 'label7',], //replace this with a variable with each product name
+  data: {
+    labels: renderChartLabels(),
     datasets: [{ // data needs to all appear in a dataset
-      label: 'Product vote percentages',  
-      backgroundColor: 'rgb(40,40,40)', // this can be an array
-      data: ['25', '12', '5', '17', '100', '50', '66', ] // this should be an array of the values for each
+      label: 'Product vote percentages',
+      backgroundColor: 'rgb(40,40,40)', // this can be an array or even better function that loops through one.
+      data: renderChartData()
     }]
   },
 
