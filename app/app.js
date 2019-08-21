@@ -166,28 +166,26 @@ function renderResults() {
 
 // Charts!
 
-var ctxt = document.getElementById('chart').getContext('2d');
+chartContext = document.getElementById('chart').getContext('2d');
 
 // eslint-disable-next-line no-undef
-var chart = new Chart(ctxt, {
-  type:'bar',
+var chartContext = new Chart(chartContext, {
+  type: 'bar',
 
-  // The data for our dataset (placeholder from ChartsJS example)
-  data: {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [{
-      label: 'Test results',
-      backgroundColor: 'rgb(40, 40, 40)',
-      data: [12, 10, 5, 2, 20, 30, 45]
-    },
-    {
-      label: 'Test results2',
-      backgroundColor: 'rgb(100, 100, 100)',
-      data: [11, 8, 3, 12, 10, 60, 15]
-    }],
+  //data!
+  data: { // this is probably the object I need to generate from my results
+    labels: ['label1', 'label2','label3', 'label4', 'label5', 'label6', 'label7',], //replace this with a variable with each product name
+    datasets: [{ // data needs to all appear in a dataset
+      label: 'Product vote percentages',  
+      backgroundColor: 'rgb(40,40,40)', // this can be an array
+      data: ['25', '12', '5', '17', '100', '50', '66', ] // this should be an array of the values for each
+    }]
   },
-  options: {}
+
+  options: {} // if end up doing much with this let's make it a separate object that gets passed in so this stays more readable.
+
 });
+
 
 
 
