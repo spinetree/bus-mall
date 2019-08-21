@@ -47,6 +47,7 @@ p {
     font-size: 16px;
     line-height: 1.5;
     margin-top: 16px;
+    text-align:left;
 }
 
 /* Layout  */
@@ -58,13 +59,13 @@ body {
 
 header {
     background: #ccc;
-    height:80px;
+    height: 80px;
 }
 
 header h1 {
     padding: 0 24px;
     float: left;
-    line-height:80px;
+    line-height: 80px;
 }
 
 nav {
@@ -75,13 +76,15 @@ nav {
 nav li {
     float: left;
     padding: 0 16px;
-    line-height:80px;
+    line-height: 80px;
 }
 
 main {
-    float: left;
-    width: 80%;
-    min-width:640px;
+    max-width: 960px;
+    width:50%;
+    min-width: 640px;
+    margin: 0 auto;
+    text-align:center;
 }
 
 main section {
@@ -93,8 +96,12 @@ main section {
 aside {
     width: 20%;
     min-width: 100px;
-    float: left;
-    min-height: 80vh;
+    position:fixed;
+    left:0;
+    top:200px;
+    /* float: left; */
+    /* clear: both; */
+    min-height: 20vh;
     background: #dedede;
 }
 
@@ -110,15 +117,16 @@ aside ul {
 
 footer {
     clear: both;
-    padding:24px;
-    background:#ccc;
-    text-align:center;
+    padding: 24px;
+    background: #ccc;
+    text-align: center;
     min-height: 100px;
 }
 
 /* test mechanism */
 #test-container {
-    min-width:800px;
+    min-width: 800px;
+    background:#dedede;
 }
 
 figure {
@@ -148,4 +156,12 @@ figcaption {
     color: #dedede;
     letter-spacing: .25px;
     width: 100%;
+}
+
+#chart-container {
+    position: relative;
+}
+
+#chart {
+    border: 10px solid #ccc;
 }

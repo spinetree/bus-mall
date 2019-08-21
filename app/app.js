@@ -135,7 +135,7 @@ function updateVoteTally() {
 
 
 function disableVoting() {
-  console.log('disabling voting');
+  // console.log('disabling voting');
   testContainer.removeEventListener('click', countVote);
 }
 
@@ -151,7 +151,7 @@ function getHitRates() {
 
 
 function renderResults() {
-  console.log('attempting to render results');
+  // console.log('attempting to render results');
   var resultsContainer = document.getElementById('results-list');
   resultsContainer.textContent = '';
   for (var i = 0; i < productList.length; i++) {
@@ -162,3 +162,25 @@ function renderResults() {
     resultsContainer.appendChild(singleResult);
   }
 }
+
+
+// Charts!
+
+var ctxt = document.getElementById('chart').getContext('2d');
+
+// eslint-disable-next-line no-undef
+var chart = new Chart(ctxt, {
+  type:'bar',
+
+  // The data for our dataset (placeholder from ChartsJS example)
+  data: {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [{
+      label: 'Test results',
+      backgroundColor: 'rgb(40, 40, 40)',
+      data: [12, 10, 5, 2, 20, 30, 45]
+    }]
+  },
+
+  options: {}
+});
