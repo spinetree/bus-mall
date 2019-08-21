@@ -1,7 +1,15 @@
 /* eslint-disable no-extra-semi */
 /* eslint-disable no-unused-vars */
 
+function getStats() {
+  var productListPackaged = localStorage.getItem('productListPackaged');
+  console.log(productListPackaged);
+};
+
+function loadStats() {};
+
 function loadProducts() {
+  // TODO: if localStorage exists for this load that instead
   new Product('bag', 'assets/bag.jpg');
   new Product('banana', 'assets/banana.jpg');
   new Product('bathroom', 'assets/bathroom.jpg');
@@ -22,6 +30,7 @@ function loadProducts() {
   new Product('usb', 'assets/usb.gif');
   new Product('watercan', 'assets/water-can.jpg');
   new Product('wineglass', 'assets/wine-glass.jpg');
+  // TODO: at the end of manual product creation, if that's a thing, add these all to local storage. 
 }
 
 var lastSeen = [];
@@ -106,8 +115,8 @@ var countVote = function (winner) {
     console.log('rendering results');
     disableVoting();
     getHitRates();
-    // renderResults();
     renderChart();
+    saveStats();
   } else {
     updateVoteTally();
   }
@@ -137,7 +146,6 @@ function updateVoteTally() {
 
 
 function disableVoting() {
-  // console.log('disabling voting');
   testContainer.removeEventListener('click', countVote);
 }
 
@@ -151,20 +159,14 @@ function getHitRates() {
   }
 }
 
-// shouldn't need this now that we're rendering this stuff directly to an array for the charts
-// function renderResults() {
-//   var resultsContainer = document.getElementById('results-list');
-//   resultsContainer.textContent = '';
-//   for (var i = 0; i < productList.length; i++) {
-//     var productTitle = productList[i].title;
-//     var productHitRate = productList[i].hitRate;
-//     var singleResult = document.createElement('li');
-//     singleResult.textContent = `${productTitle}: ${productHitRate}%`;
-//     resultsContainer.appendChild(singleResult);
-//   }
-// }
+function saveStats() {
+  var productListPackaged = JSON.stringify(productList);
+  localStorage.setItem('productListPackaged',productListPackaged);
+  console.log('stats saved');
+};
 
 // Charts!
+
 var chartContext = document.getElementById('chart').getContext('2d');
 
 // render chart data
@@ -200,9 +202,7 @@ function renderChart() {
       }]
     }
   });
-
 }
-
 
 
 
