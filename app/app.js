@@ -1,15 +1,43 @@
 /* eslint-disable no-extra-semi */
 /* eslint-disable no-unused-vars */
 
-function getStats() {
-  var productListPackaged = localStorage.getItem('productListPackaged');
-  console.log(productListPackaged);
+
+var lastSeen = [];
+var votes = 0;
+var productList = []; // smh all the stuff
+var testCandidates = [];
+var testContainer = document.getElementById('test-container');
+var testButtons;
+var results = {}; // just ids and votes
+
+
+function Product(title, url) {
+  this.title = title,
+  this.url = url,
+  this.appearances = 0,
+  this.votes = 0,
+  this.hitRate = 0,
+  this.id = productList.length;
+  productList.push(this);
+}
+
+
+Product.prototype = {
+  madeAppearance: function () {
+    this.appearances++;
+    lastSeen.push(this.id);
+  },
+  gotVote: function () {
+    this.votes++;
+  },
+  calcHitRate: function () {
+    this.hitRate = this.votes / this.appearances;
+    this.hitRate = Math.floor(this.hitRate * 100);
+  }
 };
 
-function loadStats() {};
 
-function loadProducts() {
-  // TODO: if localStorage exists for this load that instead
+function loadNewProducts() {
   new Product('bag', 'assets/bag.jpg');
   new Product('banana', 'assets/banana.jpg');
   new Product('bathroom', 'assets/bathroom.jpg');
@@ -30,40 +58,30 @@ function loadProducts() {
   new Product('usb', 'assets/usb.gif');
   new Product('watercan', 'assets/water-can.jpg');
   new Product('wineglass', 'assets/wine-glass.jpg');
-  // TODO: at the end of manual product creation, if that's a thing, add these all to local storage. 
 }
 
-var lastSeen = [];
-var votes = 0;
-var productList = [];
-var testCandidates = [];
-var testContainer = document.getElementById('test-container');
-var testButtons;
-var results = {};
 
-function Product(title, url) {
-  this.title = title,
-  this.url = url,
-  this.appearances = 0,
-  this.votes = 0,
-  this.hitRate = 0,
-  this.id = productList.length;
-  productList.push(this);
-}
+function getSavedProducts() {
+  var productListPackaged = localStorage.getItem('productListPackaged');
+  productListPackaged = JSON.parse(productListPackaged);
+  for (var i = 0; i < productListPackaged.length; i++) {
+    new Product(productListPackaged[i].title, productListPackaged[i].url);
+    productList[i].votes = productListPackaged[i].votes;
+    productList[i].appearances = productListPackaged[i].appearances;
+    productList[i].hitRate = productListPackaged[i].hitRate;
+  };
+};
 
-Product.prototype = {
 
-  madeAppearance: function () {
-    this.appearances++;
-    lastSeen.push(this.id);
-  },
-  gotVote: function () {
-    this.votes++;
-  },
-  calcHitRate: function () {
-    this.hitRate = this.votes / this.appearances;
-    this.hitRate = Math.floor(this.hitRate * 100);
+function loadProducts() {
+  if (!localStorage.getItem('productListPackaged')) {
+    // console.log('saved products not found');
+    loadNewProducts();
   }
+  else {
+    // console.log('saved products found');
+    getSavedProducts();
+  };
 };
 
 
@@ -71,6 +89,7 @@ var getCandidateIndex = function () {
   var candidateIndex = Math.floor((Math.random() * productList.length));
   return candidateIndex;
 };
+
 
 var getCandidates = function () {
   while (testCandidates.length < 3) {
@@ -85,6 +104,7 @@ var getCandidates = function () {
     return testCandidates;
   }
 };
+
 
 var renderTest = function () {
   for (var i = 0; i < testCandidates.length; i++) {
@@ -102,6 +122,7 @@ var renderTest = function () {
   testButtons = testContainer.getElementsByTagName('figure');
 };
 
+
 var countVote = function (winner) {
   var winnerId = winner.target.getAttribute('data-id');
   productList[winnerId].gotVote();
@@ -112,22 +133,25 @@ var countVote = function (winner) {
   renderTest();
   votes++;
   if (votes === 25) {
-    console.log('rendering results');
+    // console.log('rendering results');
     disableVoting();
     getHitRates();
     renderChart();
-    saveStats();
+    saveResults();
   } else {
     updateVoteTally();
   }
 };
 
+
 function addEventListeners() {
   for (var i = 0; i < testButtons.length; i++) {
     testContainer.addEventListener('click', countVote);
-    // TODO: needs conditional so only does a thing if it's coming from a figure.
+    // needs conditional so only does a thing if it's coming from a figure.
   }
 }
+
+
 
 // pre-voting things:
 
@@ -159,11 +183,13 @@ function getHitRates() {
   }
 }
 
-function saveStats() {
+
+function saveResults() {
   var productListPackaged = JSON.stringify(productList);
   localStorage.setItem('productListPackaged',productListPackaged);
-  console.log('stats saved');
+  // console.log('results saved');
 };
+
 
 // Charts!
 
@@ -179,6 +205,7 @@ function renderChartLabels() {
   return chartLabels;
 };
 
+
 function renderChartData() {
   var chartData = [];
   for(var i=0; i < productList.length; i++) {
@@ -186,6 +213,7 @@ function renderChartData() {
   };
   return chartData;
 };
+
 
 function renderChart() {
 
