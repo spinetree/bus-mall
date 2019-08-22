@@ -1,7 +1,43 @@
 /* eslint-disable no-extra-semi */
 /* eslint-disable no-unused-vars */
 
-function loadProducts() {
+
+var lastSeen = [];
+var votes = 0;
+var productList = []; // smh all the stuff
+var testCandidates = [];
+var testContainer = document.getElementById('test-container');
+var testButtons;
+var results = {}; // just ids and votes
+
+
+function Product(title, url) {
+  this.title = title,
+  this.url = url,
+  this.appearances = 0,
+  this.votes = 0,
+  this.hitRate = 0,
+  this.id = productList.length;
+  productList.push(this);
+}
+
+
+Product.prototype = {
+  madeAppearance: function () {
+    this.appearances++;
+    lastSeen.push(this.id);
+  },
+  gotVote: function () {
+    this.votes++;
+  },
+  calcHitRate: function () {
+    this.hitRate = this.votes / this.appearances;
+    this.hitRate = Math.floor(this.hitRate * 100);
+  }
+};
+
+
+function loadNewProducts() {
   new Product('bag', 'assets/bag.jpg');
   new Product('banana', 'assets/banana.jpg');
   new Product('bathroom', 'assets/bathroom.jpg');
@@ -24,37 +60,28 @@ function loadProducts() {
   new Product('wineglass', 'assets/wine-glass.jpg');
 }
 
-var lastSeen = [];
-var votes = 0;
-var productList = [];
-var testCandidates = [];
-var testContainer = document.getElementById('test-container');
-var testButtons;
-var results = {};
 
-function Product(title, url) {
-  this.title = title,
-  this.url = url,
-  this.appearances = 0,
-  this.votes = 0,
-  this.hitRate = 0,
-  this.id = productList.length;
-  productList.push(this);
-}
+function getSavedProducts() {
+  var productListPackaged = localStorage.getItem('productListPackaged');
+  productListPackaged = JSON.parse(productListPackaged);
+  for (var i = 0; i < productListPackaged.length; i++) {
+    new Product(productListPackaged[i].title, productListPackaged[i].url);
+    productList[i].votes = productListPackaged[i].votes;
+    productList[i].appearances = productListPackaged[i].appearances;
+    productList[i].hitRate = productListPackaged[i].hitRate;
+  };
+};
 
-Product.prototype = {
 
-  madeAppearance: function () {
-    this.appearances++;
-    lastSeen.push(this.id);
-  },
-  gotVote: function () {
-    this.votes++;
-  },
-  calcHitRate: function () {
-    this.hitRate = this.votes / this.appearances;
-    this.hitRate = Math.floor(this.hitRate * 100);
+function loadProducts() {
+  if (!localStorage.getItem('productListPackaged')) {
+    // console.log('saved products not found');
+    loadNewProducts();
   }
+  else {
+    // console.log('saved products found');
+    getSavedProducts();
+  };
 };
 
 
@@ -62,6 +89,7 @@ var getCandidateIndex = function () {
   var candidateIndex = Math.floor((Math.random() * productList.length));
   return candidateIndex;
 };
+
 
 var getCandidates = function () {
   while (testCandidates.length < 3) {
@@ -76,6 +104,7 @@ var getCandidates = function () {
     return testCandidates;
   }
 };
+
 
 var renderTest = function () {
   for (var i = 0; i < testCandidates.length; i++) {
@@ -93,6 +122,7 @@ var renderTest = function () {
   testButtons = testContainer.getElementsByTagName('figure');
 };
 
+
 var countVote = function (winner) {
   var winnerId = winner.target.getAttribute('data-id');
   productList[winnerId].gotVote();
@@ -103,22 +133,25 @@ var countVote = function (winner) {
   renderTest();
   votes++;
   if (votes === 25) {
-    console.log('rendering results');
+    // console.log('rendering results');
     disableVoting();
     getHitRates();
-    // renderResults();
     renderChart();
+    saveResults();
   } else {
     updateVoteTally();
   }
 };
 
+
 function addEventListeners() {
   for (var i = 0; i < testButtons.length; i++) {
     testContainer.addEventListener('click', countVote);
-    // TODO: needs conditional so only does a thing if it's coming from a figure.
+    // needs conditional so only does a thing if it's coming from a figure.
   }
 }
+
+
 
 // pre-voting things:
 
@@ -137,7 +170,6 @@ function updateVoteTally() {
 
 
 function disableVoting() {
-  // console.log('disabling voting');
   testContainer.removeEventListener('click', countVote);
 }
 
@@ -151,20 +183,16 @@ function getHitRates() {
   }
 }
 
-// shouldn't need this now that we're rendering this stuff directly to an array for the charts
-// function renderResults() {
-//   var resultsContainer = document.getElementById('results-list');
-//   resultsContainer.textContent = '';
-//   for (var i = 0; i < productList.length; i++) {
-//     var productTitle = productList[i].title;
-//     var productHitRate = productList[i].hitRate;
-//     var singleResult = document.createElement('li');
-//     singleResult.textContent = `${productTitle}: ${productHitRate}%`;
-//     resultsContainer.appendChild(singleResult);
-//   }
-// }
+
+function saveResults() {
+  var productListPackaged = JSON.stringify(productList);
+  localStorage.setItem('productListPackaged',productListPackaged);
+  // console.log('results saved');
+};
+
 
 // Charts!
+
 var chartContext = document.getElementById('chart').getContext('2d');
 
 // render chart data
@@ -177,6 +205,7 @@ function renderChartLabels() {
   return chartLabels;
 };
 
+
 function renderChartData() {
   var chartData = [];
   for(var i=0; i < productList.length; i++) {
@@ -184,6 +213,7 @@ function renderChartData() {
   };
   return chartData;
 };
+
 
 function renderChart() {
 
@@ -200,9 +230,7 @@ function renderChart() {
       }]
     }
   });
-
 }
-
 
 
 
